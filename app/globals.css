@@ -1,0 +1,247 @@
+@import "tailwindcss";
+
+/* ============================================================
+   PETE'S BBQ — Tailwind v4 CSS-first theme (OKLCH palette)
+   Reference: Franklin Barbecue × Stripe × Linear motion
+   ============================================================ */
+
+@theme {
+  /* Brand surfaces — deep ash-after-fire, never pure black */
+  --color-bg: oklch(12% 0.015 55);          /* #0E0B08 */
+  --color-surface: oklch(17% 0.018 50);     /* #181310 */
+  --color-card: oklch(20% 0.022 50);        /* #201914 */
+
+  /* Ember accents — warm, honest, never neon */
+  --color-accent: oklch(67% 0.18 45);       /* #E8762C ember orange */
+  --color-accent-light: oklch(76% 0.16 60); /* #F2A84E */
+  --color-gold: oklch(85% 0.11 80);         /* #F2C97E warm display gold */
+
+  /* Cream — warm whites, never #FFFFFF */
+  --color-cream: oklch(94% 0.015 70);       /* #F5EDE4 */
+  --color-cream-sub: oklch(76% 0.03 60);    /* #C8B09A */
+  --color-muted: oklch(50% 0.02 55);        /* #7A6A5C */
+
+  /* Borders */
+  --color-border: oklch(67% 0.18 45 / 0.18);
+  --color-border-sub: oklch(94% 0.015 70 / 0.07);
+
+  /* Fonts (mapped from next/font CSS variables) */
+  --font-display: var(--font-playfair), ui-serif, Georgia, serif;
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+
+  /* Motion */
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------- base ---------- */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+  background: var(--color-bg);
+  color: var(--color-cream);
+}
+
+body {
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
+  min-height: 100dvh;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-bg);
+}
+
+/* ---------- focus ring ---------- */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   EMBER HERO — multi-layer radial glow + floating particles
+   Pattern C (Stripe model) — CSS-only, no WebGL
+   ============================================================ */
+
+.ember-stage {
+  background:
+    radial-gradient(80% 60% at 50% 100%, oklch(67% 0.18 45 / 0.35) 0%, transparent 60%),
+    radial-gradient(50% 40% at 30% 90%, oklch(76% 0.16 60 / 0.22) 0%, transparent 70%),
+    radial-gradient(50% 40% at 70% 95%, oklch(67% 0.18 45 / 0.18) 0%, transparent 70%),
+    radial-gradient(120% 80% at 50% -10%, oklch(20% 0.022 50) 0%, var(--color-bg) 50%);
+}
+
+.ember-veil {
+  background:
+    linear-gradient(180deg, transparent 0%, oklch(12% 0.015 55 / 0.6) 80%, var(--color-bg) 100%);
+}
+
+.ember-pulse {
+  animation: emberPulse 8s var(--ease-out-expo) infinite;
+}
+@keyframes emberPulse {
+  0%, 100% { opacity: 0.85; transform: scale(1); }
+  50%      { opacity: 1;    transform: scale(1.04); }
+}
+
+/* Floating ember particles */
+.ember {
+  position: absolute;
+  border-radius: 999px;
+  background: radial-gradient(circle, oklch(85% 0.11 80) 0%, oklch(67% 0.18 45) 50%, transparent 75%);
+  filter: blur(0.5px);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+@keyframes emberRise {
+  0%   { transform: translate3d(0, 0, 0) scale(0.8); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 0.8; }
+  100% { transform: translate3d(var(--drift, 20px), -110vh, 0) scale(0.4); opacity: 0; }
+}
+
+/* ============================================================
+   MARQUEE STRIP — continuous loop
+   ============================================================ */
+
+.marquee {
+  display: flex;
+  gap: 3rem;
+  width: max-content;
+  animation: marqueeScroll 28s linear infinite;
+}
+@keyframes marqueeScroll {
+  0%   { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+
+/* ============================================================
+   SECTION ENTRANCES — IO observer toggles .is-visible
+   ============================================================ */
+
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+  transition:
+    opacity 700ms var(--ease-out-expo),
+    transform 700ms var(--ease-out-expo);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* ============================================================
+   GRAIN — fixed SVG noise overlay (the single highest-ROI detail)
+   ============================================================ */
+
+.grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9;
+  mix-blend-mode: overlay;
+  opacity: 0.038;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/></filter><rect width='300' height='300' filter='url(%23g)'/></svg>");
+}
+
+/* ============================================================
+   TYPOGRAPHY utilities — fluid clamp
+   ============================================================ */
+
+.text-display { font-size: clamp(3.2rem, 10vw, 7rem); line-height: 0.95; letter-spacing: -0.025em; }
+.text-h1      { font-size: clamp(2.4rem, 6vw, 4rem);  line-height: 1;    letter-spacing: -0.02em; }
+.text-h2      { font-size: clamp(1.75rem, 4vw, 2.8rem); line-height: 1.1; letter-spacing: -0.015em; }
+.text-h3      { font-size: clamp(1.25rem, 2.5vw, 1.6rem); line-height: 1.2; }
+.text-lead    { font-size: clamp(1rem, 2vw, 1.2rem);  line-height: 1.55; }
+.text-body    { font-size: clamp(0.875rem, 1.5vw, 1rem); line-height: 1.6; }
+
+/* ============================================================
+   COMPONENT — buttons (one definition, reused)
+   ============================================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.5rem;
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  letter-spacing: 0.01em;
+  transition: all 180ms var(--ease-out-expo);
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+.btn-primary {
+  background: var(--color-accent);
+  color: oklch(15% 0.02 55);
+  box-shadow: 0 1px 0 oklch(85% 0.11 80 / 0.4) inset, 0 10px 30px -10px oklch(67% 0.18 45 / 0.5);
+}
+.btn-primary:hover {
+  background: var(--color-accent-light);
+  transform: translateY(-1px);
+  box-shadow: 0 1px 0 oklch(85% 0.11 80 / 0.5) inset, 0 14px 36px -10px oklch(67% 0.18 45 / 0.6);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--color-cream);
+  border-color: var(--color-border-sub);
+}
+.btn-ghost:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent-light);
+}
+
+/* ============================================================
+   CARD lift on hover (signature + menu items)
+   ============================================================ */
+
+.card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border-sub);
+  border-radius: 14px;
+  transition: transform 200ms var(--ease-out-expo), border-color 200ms var(--ease-out-expo), box-shadow 200ms var(--ease-out-expo);
+  position: relative;
+  overflow: hidden;
+}
+.card::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 14px;
+  background: radial-gradient(60% 60% at 50% 0%, oklch(67% 0.18 45 / 0.18), transparent 70%);
+  opacity: 0;
+  transition: opacity 220ms var(--ease-out-expo);
+  pointer-events: none;
+}
+.card:hover {
+  transform: translateY(-3px);
+  border-color: var(--color-border);
+  box-shadow: 0 24px 60px -30px oklch(0% 0 0 / 0.8);
+}
+.card:hover::after { opacity: 1; }
+
+/* No-scrollbar */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }

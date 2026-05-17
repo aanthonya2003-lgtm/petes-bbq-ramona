@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#0E0B08"/>
+  <path d="M32 12c4 6 2 10-1 13s-5 6-2 11c-7-1-12-6-12-13 0-5 6-11 15-11z"
+        fill="#E8762C"/>
+  <path d="M32 22c2 3 1 5 0 7s-3 4-1 8c-4 0-7-3-7-7 0-3 3-8 8-8z"
+        fill="#F2C97E"/>
+  <text x="50%" y="86%" text-anchor="middle"
+        font-family="Georgia, serif" font-weight="900" font-size="14"
+        font-style="italic" fill="#F5EDE4">P</text>
+</svg>
